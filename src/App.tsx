@@ -1,7 +1,14 @@
 import { useOllamaHealth } from '@/hooks/useOllamaHealth';
+import { MoodSelector } from '@/components/MoodSelector';
+import type { Mood } from '@/types/mood';
 
 function App() {
   const { status, isChecking } = useOllamaHealth();
+
+  // TODO: Replace with actual content generation integration
+  const handleMoodSelect = (mood: Mood) => {
+    console.log('Selected mood:', mood);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -88,6 +95,14 @@ function App() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Mood Selection */}
+        <div className="mb-6">
+          <MoodSelector
+            disabled={status !== 'connected'}
+            onMoodSelect={handleMoodSelect}
+          />
         </div>
       </div>
     </div>

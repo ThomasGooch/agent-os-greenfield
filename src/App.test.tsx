@@ -52,4 +52,60 @@ describe('App', () => {
       expect(screen.getByText(/failed to connect/i)).toBeInTheDocument();
     });
   });
+
+  it('renders MoodSelector below Ollama connection status', async () => {
+    vi.mocked(ollamaClient.checkHealth).mockResolvedValue('connected');
+
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/ollama connected/i)).toBeInTheDocument();
+    });
+
+    // Check that MoodSelector buttons are present
+    expect(
+      screen.getByRole('button', { name: /😊 happy/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /😌 calm/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /💪 motivated/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /🎨 creative/i })
+    ).toBeInTheDocument();
+  });
+
+  it('disables MoodSelector when Ollama is not connected', async () => {
+    vi.mocked(ollamaClient.checkHealth).mockResolvedValue('disconnected');
+
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/ollama is not running/i)).toBeInTheDocument();
+    });
+
+    // All mood buttons should be disabled
+    const happyButton = screen.getByRole('button', { name: /😊 happy/i });
+    expect(happyButton).toBeDisabled();
+  });
+
+  it('logs mood selection when MoodSelector button is clicked', async () => {
+    vi.mocked(ollamaClient.checkHealth).mockResolvedValue('connected');
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/ollama connected/i)).toBeInTheDocument();
+    });
+
+    const calmButton = screen.getByRole('button', { name: /😌 calm/i });
+    calmButton.click();
+
+    expect(consoleSpy).toHaveBeenCalledWith('Selected mood:', 'calm');
+
+    consoleSpy.mockRestore();
+  });
 });
