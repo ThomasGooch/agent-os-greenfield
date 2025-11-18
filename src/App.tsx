@@ -26,7 +26,7 @@ function App() {
       const contentAgent = ContentGeneratorAgent.getInstance();
       const result = await contentAgent.generateContent(prompt);
 
-      if (result.success) {
+      if (result.success && result.content) {
         setContent(result.content);
       } else {
         // Error handled by toaster in ContentGeneratorAgent
