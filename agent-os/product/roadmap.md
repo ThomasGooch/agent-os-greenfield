@@ -2,7 +2,7 @@
 
 1. [x] Project Initialization — Set up Vite + React + TypeScript project with Tailwind CSS, configure Vitest + React Testing Library, add ESLint + Prettier, and establish project folder structure `S`
 
-2. [ ] Ollama Integration Setup — Set up local Ollama instance connection, test API endpoint communication, implement streaming responses, and verify connectivity with health checks `S`
+2. [x] Ollama Integration Setup — Set up local Ollama instance connection, test API endpoint communication, implement streaming responses, and verify connectivity with health checks `S`
 
 3. [ ] Mood Selection UI — Create mood selection interface with four mood options (Happy, Calm, Motivated, Creative) using buttons, implement active state styling, and ensure accessible interaction `XS`
 
