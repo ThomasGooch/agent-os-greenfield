@@ -1,6 +1,6 @@
 # Product Roadmap
 
-1. [ ] Project Initialization — Set up Vite + React + TypeScript project with Tailwind CSS, configure Vitest + React Testing Library, add ESLint + Prettier, and establish project folder structure `S`
+1. [x] Project Initialization — Set up Vite + React + TypeScript project with Tailwind CSS, configure Vitest + React Testing Library, add ESLint + Prettier, and establish project folder structure `S`
 
 2. [ ] Ollama Integration Setup — Set up local Ollama instance connection, test API endpoint communication, implement streaming responses, and verify connectivity with health checks `S`
 
