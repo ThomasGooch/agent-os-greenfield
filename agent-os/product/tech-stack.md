@@ -15,7 +15,7 @@
 
 ## AI & Local Processing
 - **AI Runtime:** Ollama (local LLM inference)
-- **Model:** TBD (optimized for speed - likely llama2 or mistral variants)
+- **Model:** llama3.1:8b (optimized for speed and quality balance)
 - **API Communication:** HTTP/REST to local Ollama endpoint (default: http://localhost:11434)
 
 ## Agent Architecture
