@@ -1,13 +1,42 @@
+import { useState } from 'react';
 import { useOllamaHealth } from '@/hooks/useOllamaHealth';
 import { MoodSelector } from '@/components/MoodSelector';
+import { InspirationCard } from '@/components/InspirationCard';
+import { ContentGeneratorAgent } from '@/agents/ContentGeneratorAgent';
+import { MoodInterpreterAgent } from '@/agents/MoodInterpreterAgent';
 import type { Mood } from '@/types/mood';
 
 function App() {
   const { status, isChecking } = useOllamaHealth();
+  const [content, setContent] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // TODO: Replace with actual content generation integration
-  const handleMoodSelect = (mood: Mood) => {
+  const handleMoodSelect = async (mood: Mood) => {
     console.log('Selected mood:', mood);
+
+    // Set loading state
+    setIsLoading(true);
+
+    try {
+      // Get prompt from MoodInterpreterAgent
+      const moodAgent = MoodInterpreterAgent.getInstance();
+      const prompt = moodAgent.getPromptForMood(mood);
+
+      // Generate content using ContentGeneratorAgent
+      const contentAgent = ContentGeneratorAgent.getInstance();
+      const result = await contentAgent.generateContent(prompt);
+
+      if (result.success) {
+        setContent(result.content);
+      } else {
+        // Error handled by toaster in ContentGeneratorAgent
+        console.error('Content generation failed:', result.error);
+      }
+    } catch (error) {
+      console.error('Unexpected error during content generation:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -35,6 +64,9 @@ function App() {
           disabled={status !== 'connected'}
           onMoodSelect={handleMoodSelect}
         />
+
+        {/* Inspiration Card */}
+        <InspirationCard content={content} isLoading={isLoading} />
       </div>
     </div>
   );

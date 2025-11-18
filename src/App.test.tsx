@@ -115,3 +115,144 @@ describe('App', () => {
     consoleSpy.mockRestore();
   });
 });
+
+// Import agents for InspirationCard integration tests
+import { ContentGeneratorAgent } from './agents/ContentGeneratorAgent';
+import { MoodInterpreterAgent } from './agents/MoodInterpreterAgent';
+
+describe('App Integration with InspirationCard', () => {
+  let mockContentAgent: ContentGeneratorAgent;
+  let mockMoodAgent: MoodInterpreterAgent;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(ollamaClient.checkHealth).mockResolvedValue('connected');
+
+    // Get singleton instances and mock their methods
+    mockContentAgent = ContentGeneratorAgent.getInstance();
+    mockMoodAgent = MoodInterpreterAgent.getInstance();
+
+    // Reset mocks
+    vi.spyOn(mockMoodAgent, 'getPromptForMood').mockReturnValue('');
+    vi.spyOn(mockContentAgent, 'generateContent').mockResolvedValue({
+      success: true,
+      content: '',
+    });
+  });
+
+  it('should display loading state in InspirationCard during content generation', async () => {
+    // Mock agent behavior with delay
+    vi.mocked(mockMoodAgent.getPromptForMood).mockReturnValue(
+      'Generate uplifting content'
+    );
+    vi.mocked(mockContentAgent.generateContent).mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(
+            () => resolve({ success: true, content: 'You are amazing!' }),
+            100
+          );
+        })
+    );
+
+    render(<App />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/how are you feeling today/i)
+      ).toBeInTheDocument();
+    });
+
+    // Click the happy mood button
+    const happyButton = screen.getByRole('button', { name: /😊 happy/i });
+    happyButton.click();
+
+    // Should show loading state (check for animate-pulse)
+    await waitFor(() => {
+      const loadingElement = document.querySelector('.animate-pulse');
+      expect(loadingElement).toBeInTheDocument();
+    });
+  });
+
+  it('should display content from ContentGeneratorAgent after generation', async () => {
+    const mockContent = 'Today is a beautiful day!';
+
+    // Mock agent behavior
+    vi.mocked(mockMoodAgent.getPromptForMood).mockReturnValue(
+      'Generate uplifting content'
+    );
+    vi.mocked(mockContentAgent.generateContent).mockResolvedValue({
+      success: true,
+      content: mockContent,
+    });
+
+    render(<App />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/how are you feeling today/i)
+      ).toBeInTheDocument();
+    });
+
+    // Click the happy mood button
+    const happyButton = screen.getByRole('button', { name: /😊 happy/i });
+    happyButton.click();
+
+    // Wait for content to appear
+    await waitFor(
+      () => {
+        expect(screen.getByText(mockContent)).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
+  });
+
+  it('should update content when new mood is selected', async () => {
+    const firstContent = 'First inspirational message';
+    const secondContent = 'Second inspirational message';
+
+    // Mock agent behavior
+    vi.mocked(mockMoodAgent.getPromptForMood).mockReturnValue(
+      'Generate content'
+    );
+    vi.mocked(mockContentAgent.generateContent)
+      .mockResolvedValueOnce({
+        success: true,
+        content: firstContent,
+      })
+      .mockResolvedValueOnce({
+        success: true,
+        content: secondContent,
+      });
+
+    render(<App />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/how are you feeling today/i)
+      ).toBeInTheDocument();
+    });
+
+    // Click first mood
+    const happyButton = screen.getByRole('button', { name: /😊 happy/i });
+    happyButton.click();
+
+    await waitFor(
+      () => {
+        expect(screen.getByText(firstContent)).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
+
+    // Click second mood
+    const calmButton = screen.getByRole('button', { name: /😌 calm/i });
+    calmButton.click();
+
+    await waitFor(
+      () => {
+        expect(screen.getByText(secondContent)).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
+  });
+});
