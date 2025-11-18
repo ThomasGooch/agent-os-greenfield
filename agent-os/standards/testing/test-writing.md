@@ -5,6 +5,7 @@
   2. **Green**: Write minimal code to make the test pass
   3. **Refactor**: Improve code quality while keeping tests green
 - **Write Tests First**: Create tests before implementation to clarify requirements and drive design
+- **TDD is Mandatory**: Always apply red-green-refactor cycle - no exceptions
 - **One Test at a Time**: Focus on a single test case, make it pass, then move to the next
 - **Test Behavior, Not Implementation**: Focus tests on what the code does, not how it does it, to reduce brittleness
 - **Clear Test Names**: Use descriptive names that explain what's being tested and the expected outcome
@@ -12,3 +13,5 @@
 - **Mock External Dependencies**: Isolate units by mocking databases, APIs, file systems, and other external services
 - **Fast Execution**: Keep unit tests fast (milliseconds) so developers run them frequently during development
 - **Test Core Flows First**: Prioritize tests for critical paths and primary user workflows before edge cases
+- **TypeScript Types in Tests**: Use strict TypeScript typing in tests to catch type errors early
+- **Vitest + React Testing Library**: Use Vitest as test runner with React Testing Library for component tests
