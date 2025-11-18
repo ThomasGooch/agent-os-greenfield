@@ -53,8 +53,8 @@ describe('MoodSelector', () => {
     const calmButton = screen.getByRole('button', { name: /😌 calm/i });
     await user.click(calmButton);
 
-    // Active state should be visible (bg-blue-300 for calm)
-    expect(calmButton).toHaveClass('bg-blue-300');
+    // Active state should be visible (ring-2 ring-gray-900)
+    expect(calmButton).toHaveClass('ring-2', 'ring-gray-900');
   });
 
   it('should maintain active state when clicking same mood again', async () => {
@@ -69,12 +69,12 @@ describe('MoodSelector', () => {
     // Click once
     await user.click(motivatedButton);
     expect(mockCallback).toHaveBeenCalledWith('motivated');
-    expect(motivatedButton).toHaveClass('bg-orange-300');
+    expect(motivatedButton).toHaveClass('ring-2', 'ring-gray-900');
 
     // Click again
     await user.click(motivatedButton);
     expect(mockCallback).toHaveBeenCalledTimes(2);
-    expect(motivatedButton).toHaveClass('bg-orange-300');
+    expect(motivatedButton).toHaveClass('ring-2', 'ring-gray-900');
   });
 
   it('should support keyboard navigation with Tab, Enter, and Space', async () => {

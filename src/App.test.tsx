@@ -20,7 +20,7 @@ describe('App', () => {
     );
 
     render(<App />);
-    expect(screen.getByText(/checking ollama connection/i)).toBeInTheDocument();
+    expect(screen.getByText(/connecting/i)).toBeInTheDocument();
   });
 
   it('displays connected status when Ollama is available', async () => {
@@ -29,7 +29,9 @@ describe('App', () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText(/ollama connected/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/how are you feeling today/i)
+      ).toBeInTheDocument();
     });
   });
 
@@ -39,7 +41,7 @@ describe('App', () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText(/ollama is not running/i)).toBeInTheDocument();
+      expect(screen.getByText(/ollama not running/i)).toBeInTheDocument();
     });
   });
 
@@ -49,7 +51,7 @@ describe('App', () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText(/failed to connect/i)).toBeInTheDocument();
+      expect(screen.getByText(/connection error/i)).toBeInTheDocument();
     });
   });
 
@@ -59,7 +61,9 @@ describe('App', () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText(/ollama connected/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/how are you feeling today/i)
+      ).toBeInTheDocument();
     });
 
     // Check that MoodSelector buttons are present
@@ -83,7 +87,7 @@ describe('App', () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText(/ollama is not running/i)).toBeInTheDocument();
+      expect(screen.getByText(/ollama not running/i)).toBeInTheDocument();
     });
 
     // All mood buttons should be disabled
@@ -98,7 +102,9 @@ describe('App', () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText(/ollama connected/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/how are you feeling today/i)
+      ).toBeInTheDocument();
     });
 
     const calmButton = screen.getByRole('button', { name: /😌 calm/i });

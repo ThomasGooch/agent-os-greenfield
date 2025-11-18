@@ -12,27 +12,27 @@ describe('MoodSelector - Gap Analysis Tests', () => {
     // Select Happy
     const happyButton = screen.getByRole('button', { name: /😊 happy/i });
     await user.click(happyButton);
-    expect(happyButton).toHaveClass('bg-yellow-300');
+    expect(happyButton).toHaveClass('ring-2', 'ring-gray-900');
 
     // Select Calm - Happy should no longer be active
     const calmButton = screen.getByRole('button', { name: /😌 calm/i });
     await user.click(calmButton);
-    expect(calmButton).toHaveClass('bg-blue-300');
-    expect(happyButton).not.toHaveClass('bg-yellow-300');
+    expect(calmButton).toHaveClass('ring-2', 'ring-gray-900');
+    expect(happyButton).not.toHaveClass('ring-2');
 
-    // Select Motivated
+    // Select Motivated - Calm should no longer be active
     const motivatedButton = screen.getByRole('button', {
       name: /💪 motivated/i,
     });
     await user.click(motivatedButton);
-    expect(motivatedButton).toHaveClass('bg-orange-300');
-    expect(calmButton).not.toHaveClass('bg-blue-300');
+    expect(motivatedButton).toHaveClass('ring-2', 'ring-gray-900');
+    expect(calmButton).not.toHaveClass('ring-2');
 
-    // Select Creative
+    // Select Creative - Motivated should no longer be active
     const creativeButton = screen.getByRole('button', { name: /🎨 creative/i });
     await user.click(creativeButton);
-    expect(creativeButton).toHaveClass('bg-purple-300');
-    expect(motivatedButton).not.toHaveClass('bg-orange-300');
+    expect(creativeButton).toHaveClass('ring-2', 'ring-gray-900');
+    expect(motivatedButton).not.toHaveClass('ring-2');
 
     expect(mockCallback).toHaveBeenCalledTimes(4);
   });
@@ -59,7 +59,7 @@ describe('MoodSelector - Gap Analysis Tests', () => {
     expect(mockCallback).toHaveBeenNthCalledWith(3, 'motivated');
 
     // Last clicked button should be active
-    expect(motivatedButton).toHaveClass('bg-orange-300');
+    expect(motivatedButton).toHaveClass('ring-2', 'ring-gray-900');
   });
 
   it('should complete full keyboard navigation flow through all buttons', async () => {
@@ -90,7 +90,7 @@ describe('MoodSelector - Gap Analysis Tests', () => {
     // Activate last button with Space
     await user.keyboard(' ');
     expect(mockCallback).toHaveBeenCalledWith('creative');
-    expect(creativeButton).toHaveClass('bg-purple-300');
+    expect(creativeButton).toHaveClass('ring-2', 'ring-gray-900');
   });
 
   it('should maintain disabled state consistently across all buttons', () => {
@@ -107,7 +107,7 @@ describe('MoodSelector - Gap Analysis Tests', () => {
     buttons.forEach((button) => {
       expect(button).toBeDisabled();
       // Check that disabled classes are present in the className string
-      expect(button.className).toContain('disabled:opacity-50');
+      expect(button.className).toContain('disabled:opacity-30');
       expect(button.className).toContain('disabled:cursor-not-allowed');
     });
   });
