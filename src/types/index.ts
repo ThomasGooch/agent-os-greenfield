@@ -8,3 +8,5 @@ export type {
   OllamaError,
   ConnectionStatus,
 } from './ollama';
+
+export type { GenerationResult, CircuitState } from './agent';
