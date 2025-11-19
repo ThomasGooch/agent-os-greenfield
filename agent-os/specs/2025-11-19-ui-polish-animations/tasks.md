@@ -14,21 +14,21 @@
 
 ### Tasks
 
-- [ ] **1.1** Add custom keyframes to `tailwind.config.js`
+- [x] **1.1** Add custom keyframes to `tailwind.config.js`
   - Add `fade-in-up` keyframe (opacity 0→1, translateY 20px→0)
   - Add `slide-up` keyframe (translateY 10px→0, opacity 0→1)
   - Add `slide-down` keyframe (translateY -10px→0, opacity 0→1)
   - Add `shadow-pulse` keyframe (box-shadow 0.1→0.15 opacity cycle)
   - Add `gentle-pulse` keyframe (opacity 1→0.95 cycle)
 
-- [ ] **1.2** Add custom animation utilities to `tailwind.config.js`
+- [x] **1.2** Add custom animation utilities to `tailwind.config.js`
   - `animate-fade-in-up`: 0.4s with spring cubic-bezier(0.34, 1.56, 0.64, 1)
   - `animate-slide-up`: 0.3s with spring cubic-bezier(0.34, 1.56, 0.64, 1)
   - `animate-slide-down`: 0.3s with spring cubic-bezier(0.34, 1.56, 0.64, 1)
   - `animate-shadow-pulse`: 3s infinite ease-in-out
   - `animate-gentle-pulse`: 2s infinite ease-in-out
 
-- [ ] **1.3** Test Tailwind build
+- [x] **1.3** Test Tailwind build
   - Run `npm run build` to verify no config errors
   - Verify new animation classes are generated
   - Check that existing styles still work
@@ -56,18 +56,18 @@
 
 ### Tasks
 
-- [ ] **2.1** Update App component background
+- [x] **2.1** Update App component background
   - Replace `bg-gray-50` with gradient: `bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20`
   - Test gradient appearance in browser
   - Verify contrast ratios for accessibility (WCAG AA minimum)
 
-- [ ] **2.2** Add global reduced-motion styles to `src/index.css`
+- [x] **2.2** Add global reduced-motion styles to `src/index.css`
   - Add `@media (prefers-reduced-motion: reduce)` block
   - Set `animation-duration: 0.01ms !important` for decorative animations
   - Keep functional transitions at 200ms for `.toast` and `.status-message`
   - Add comments explaining accessibility purpose
 
-- [ ] **2.3** Test reduced motion
+- [x] **2.3** Test reduced motion
   - Enable "Reduce motion" in browser/OS settings
   - Verify decorative animations are disabled
   - Confirm functional transitions still work
@@ -98,24 +98,24 @@
 
 ### Tasks
 
-- [ ] **3.1** Add staggered entrance animations
+- [x] **3.1** Add staggered entrance animations
   - Create delay array: `['delay-0', 'delay-75', 'delay-150', 'delay-[225ms]']`
   - Map delays to buttons using index
   - Add `animate-fade-in-up` class to each button
   - Add `motion-reduce:animate-none` for accessibility
 
-- [ ] **3.2** Enhance hover effects
+- [x] **3.2** Enhance hover effects
   - Add `hover:shadow-xl` for elevated shadow
   - Add `hover:-translate-y-1` for lift effect
   - Add `active:translate-y-0` for press feedback
   - Add `motion-reduce:hover:translate-y-0` to disable for reduced motion
 
-- [ ] **3.3** Update transition timing
+- [x] **3.3** Update transition timing
   - Change `transition-all duration-200` to `duration-300`
   - Add cubic-bezier easing: `cubic-bezier(0.34, 1.56, 0.64, 1)` via inline style or utility
   - Test timing feels bouncy and playful
 
-- [ ] **3.4** Update MoodSelector tests
+- [x] **3.4** Update MoodSelector tests
   - Check if tests reference specific classes
   - Update assertions if needed for new animation classes
   - Ensure all button interaction tests pass
@@ -148,25 +148,25 @@
 
 ### Tasks
 
-- [ ] **4.1** Add shadow pulse to InspirationCard
+- [x] **4.1** Add shadow pulse to InspirationCard
   - Add `animate-shadow-pulse` class when `isVisible` is true
   - Only apply when content is displayed (not loading)
   - Add `motion-reduce:animate-none` to disable pulse
   - Keep existing fade/scale transition
 
-- [ ] **4.2** Add gentle pulse to Toast
+- [x] **4.2** Add gentle pulse to Toast
   - Add `animate-gentle-pulse` class to toast container
   - Keep existing `animate-slide-in` animation
   - Add `motion-reduce:animate-[slide-in]` to keep only slide for reduced motion
   - Ensure pulse doesn't interfere with auto-dismiss
 
-- [ ] **4.3** Update InspirationCard tests
+- [x] **4.3** Update InspirationCard tests
   - Check for new animation class in tests
   - Update assertions if needed
   - Verify loading state still shows pulse skeleton
   - Test content display transition
 
-- [ ] **4.4** Update Toast tests
+- [x] **4.4** Update Toast tests
   - Check if pulse class affects assertions
   - Verify auto-dismiss timing unchanged
   - Test all toast types (success, error, warning, info)
@@ -199,40 +199,40 @@
 
 ### Tasks
 
-- [ ] **5.1** Implement status message transitions
+- [x] **5.1** Implement status message transitions
   - Wrap status messages in a transition container: `<div className="h-6 relative overflow-hidden">`
   - Add `animate-slide-down` to each status message
   - Add `absolute inset-0` positioning for smooth height transitions
   - Add `motion-reduce:animate-none` fallback
   - Test all status types: offline, circuit breaker, Ollama connected/disconnected/error
 
-- [ ] **5.2** Verify message priority hierarchy
+- [x] **5.2** Verify message priority hierarchy
   - Test offline message appears first when offline
   - Test circuit breaker shows when online but circuit open
   - Test Ollama status shows when online and circuit closed
   - Ensure transitions don't break priority logic
 
-- [ ] **5.3** Run full test suite
+- [x] **5.3** Run full test suite
   - Execute `npm test -- --run` for all 134 tests
   - Fix any failing tests caused by new animation classes
   - Verify no regressions in functionality
   - Ensure test execution time hasn't significantly increased
 
-- [ ] **5.4** Cross-browser testing
+- [x] **5.4** Cross-browser testing
   - Test in Chrome (latest)
   - Test in Firefox (latest)
   - Test in Safari (latest)
   - Test on mobile (iOS Safari or Chrome Mobile)
   - Verify animations work consistently
 
-- [ ] **5.5** Performance verification
+- [x] **5.5** Performance verification
   - Open DevTools Performance tab
   - Record page load and interactions
   - Verify 60fps during all animations
   - Check no layout thrashing or forced reflows
   - Ensure page interactive within 300ms
 
-- [ ] **5.6** Accessibility audit
+- [x] **5.6** Accessibility audit
   - Test with keyboard navigation only
   - Enable `prefers-reduced-motion` and verify compliance
   - Test with screen reader (VoiceOver or NVDA)

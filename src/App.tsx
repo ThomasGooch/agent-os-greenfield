@@ -53,7 +53,7 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20 px-4 py-12">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -62,36 +62,49 @@ function AppContent() {
           </h1>
           {isChecking && <p className="text-sm text-gray-400">Connecting...</p>}
 
-          {/* Offline message (highest priority) */}
-          {!isOnline && (
-            <p className="text-sm text-red-500">You appear to be offline</p>
-          )}
-
-          {/* Circuit breaker message */}
-          {isOnline && isCircuitOpen && (
-            <p className="text-sm text-amber-500">
-              Service temporarily unavailable. Try again in {remainingSeconds}s
-            </p>
-          )}
-
-          {/* Ollama connection status */}
-          {isOnline &&
-            !isCircuitOpen &&
-            !isChecking &&
-            status === 'connected' && (
-              <p className="text-sm text-gray-400">
-                How are you feeling today?
+          {/* Status messages with transitions */}
+          <div className="h-6 relative overflow-hidden">
+            {/* Offline message (highest priority) */}
+            {!isOnline && (
+              <p className="text-sm text-red-500 animate-slide-down absolute inset-0 status-message motion-reduce:animate-none">
+                You appear to be offline
               </p>
             )}
-          {isOnline &&
-            !isCircuitOpen &&
-            !isChecking &&
-            status === 'disconnected' && (
-              <p className="text-sm text-red-500">Ollama not running</p>
+
+            {/* Circuit breaker message */}
+            {isOnline && isCircuitOpen && (
+              <p className="text-sm text-amber-500 animate-slide-down absolute inset-0 status-message motion-reduce:animate-none">
+                Service temporarily unavailable. Try again in {remainingSeconds}
+                s
+              </p>
             )}
-          {isOnline && !isCircuitOpen && !isChecking && status === 'error' && (
-            <p className="text-sm text-amber-500">Connection error</p>
-          )}
+
+            {/* Ollama connection status */}
+            {isOnline &&
+              !isCircuitOpen &&
+              !isChecking &&
+              status === 'connected' && (
+                <p className="text-sm text-gray-400 animate-slide-down absolute inset-0 status-message motion-reduce:animate-none">
+                  How are you feeling today?
+                </p>
+              )}
+            {isOnline &&
+              !isCircuitOpen &&
+              !isChecking &&
+              status === 'disconnected' && (
+                <p className="text-sm text-red-500 animate-slide-down absolute inset-0 status-message motion-reduce:animate-none">
+                  Ollama not running
+                </p>
+              )}
+            {isOnline &&
+              !isCircuitOpen &&
+              !isChecking &&
+              status === 'error' && (
+                <p className="text-sm text-amber-500 animate-slide-down absolute inset-0 status-message motion-reduce:animate-none">
+                  Connection error
+                </p>
+              )}
+          </div>
         </div>
 
         {/* Mood Selection */}

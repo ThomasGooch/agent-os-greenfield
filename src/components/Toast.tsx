@@ -41,7 +41,7 @@ export function Toast({ id, message, type, onClose }: ToastProps) {
     <div
       role="alert"
       aria-live="polite"
-      className={`${typeStyles[type]} fixed right-4 top-4 min-w-80 max-w-md border-l-4 p-4 shadow-lg transition-all duration-300 ease-in-out animate-slide-in`}
+      className={`${typeStyles[type]} fixed right-4 top-4 min-w-80 max-w-md border-l-4 p-4 shadow-lg transition-all duration-300 ease-in-out animate-slide-in animate-gentle-pulse motion-reduce:animate-slide-in`}
     >
       <div className="flex items-start justify-between gap-3">
         <p className="flex-1 text-sm font-medium">{message}</p>
