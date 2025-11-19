@@ -1,5 +1,6 @@
 import { ollamaClient } from '@/services/OllamaClient';
 import type { GenerationResult, CircuitState } from '@/types';
+import { EMPTY_RESPONSE, INTERRUPTED_GENERATION } from '@/types/agent';
 
 /**
  * ContentGeneratorAgent - Handles AI content generation with fault tolerance
@@ -46,6 +47,14 @@ export class ContentGeneratorAgent {
       ContentGeneratorAgent.instance = new ContentGeneratorAgent();
     }
     return ContentGeneratorAgent.instance;
+  }
+
+  /**
+   * Get circuit breaker open until timestamp
+   * @returns Timestamp when circuit will transition to half-open
+   */
+  public getCircuitOpenUntil(): number {
+    return this.circuitOpenUntil;
   }
 
   /**
@@ -118,7 +127,19 @@ export class ContentGeneratorAgent {
       chunks.push(chunk);
     }
 
-    return chunks.join('');
+    const content = chunks.join('');
+
+    // Validate response is not empty
+    if (!content || content.trim().length === 0) {
+      throw new Error(EMPTY_RESPONSE);
+    }
+
+    // Detect interrupted generation (suspiciously short response)
+    if (content.trim().length < 10) {
+      throw new Error(INTERRUPTED_GENERATION);
+    }
+
+    return content;
   }
 
   /**
@@ -129,7 +150,9 @@ export class ContentGeneratorAgent {
       errorMessage.includes('Failed to connect') ||
       errorMessage.includes('timed out') ||
       errorMessage.includes('ECONNREFUSED') ||
-      errorMessage.includes('Connection')
+      errorMessage.includes('Connection') ||
+      errorMessage.includes(EMPTY_RESPONSE) ||
+      errorMessage.includes(INTERRUPTED_GENERATION)
     );
   }
 
@@ -137,6 +160,14 @@ export class ContentGeneratorAgent {
    * Transform technical error to user-friendly message
    */
   private transformError(errorMessage: string): string {
+    if (errorMessage.includes(EMPTY_RESPONSE)) {
+      return 'Unable to generate content. Please try again';
+    }
+
+    if (errorMessage.includes(INTERRUPTED_GENERATION)) {
+      return 'Generation failed. Please try again';
+    }
+
     if (
       errorMessage.includes('Failed to connect') ||
       errorMessage.includes('ECONNREFUSED') ||

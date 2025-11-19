@@ -107,7 +107,7 @@ describe('MoodSelector - Gap Analysis Tests', () => {
     buttons.forEach((button) => {
       expect(button).toBeDisabled();
       // Check that disabled classes are present in the className string
-      expect(button.className).toContain('disabled:opacity-30');
+      expect(button.className).toContain('disabled:opacity-50');
       expect(button.className).toContain('disabled:cursor-not-allowed');
     });
   });

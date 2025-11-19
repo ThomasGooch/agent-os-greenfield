@@ -2,12 +2,18 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useOllamaHealth } from './useOllamaHealth';
 import { ollamaClient } from '@/services/OllamaClient';
+import { ToastProvider } from '@/contexts/ToastContext';
+import type { PropsWithChildren } from 'react';
 
 vi.mock('@/services/OllamaClient', () => ({
   ollamaClient: {
     checkHealth: vi.fn(),
   },
 }));
+
+const wrapper = ({ children }: PropsWithChildren) => (
+  <ToastProvider>{children}</ToastProvider>
+);
 
 describe('useOllamaHealth', () => {
   beforeEach(() => {
@@ -17,7 +23,7 @@ describe('useOllamaHealth', () => {
   it('should initialize with disconnected status', () => {
     vi.mocked(ollamaClient.checkHealth).mockResolvedValue('connected');
 
-    const { result } = renderHook(() => useOllamaHealth());
+    const { result } = renderHook(() => useOllamaHealth(), { wrapper });
 
     expect(result.current.status).toBe('disconnected');
     expect(result.current.isChecking).toBe(true);
@@ -26,7 +32,7 @@ describe('useOllamaHealth', () => {
   it('should call checkHealth on mount', async () => {
     vi.mocked(ollamaClient.checkHealth).mockResolvedValue('connected');
 
-    renderHook(() => useOllamaHealth());
+    renderHook(() => useOllamaHealth(), { wrapper });
 
     await waitFor(() => {
       expect(ollamaClient.checkHealth).toHaveBeenCalledTimes(1);
@@ -36,7 +42,7 @@ describe('useOllamaHealth', () => {
   it('should update status to connected when health check succeeds', async () => {
     vi.mocked(ollamaClient.checkHealth).mockResolvedValue('connected');
 
-    const { result } = renderHook(() => useOllamaHealth());
+    const { result } = renderHook(() => useOllamaHealth(), { wrapper });
 
     await waitFor(() => {
       expect(result.current.status).toBe('connected');
@@ -47,7 +53,7 @@ describe('useOllamaHealth', () => {
   it('should update status to disconnected when Ollama unavailable', async () => {
     vi.mocked(ollamaClient.checkHealth).mockResolvedValue('disconnected');
 
-    const { result } = renderHook(() => useOllamaHealth());
+    const { result } = renderHook(() => useOllamaHealth(), { wrapper });
 
     await waitFor(() => {
       expect(result.current.status).toBe('disconnected');
@@ -58,7 +64,7 @@ describe('useOllamaHealth', () => {
   it('should update status to error when health check fails', async () => {
     vi.mocked(ollamaClient.checkHealth).mockResolvedValue('error');
 
-    const { result } = renderHook(() => useOllamaHealth());
+    const { result } = renderHook(() => useOllamaHealth(), { wrapper });
 
     await waitFor(() => {
       expect(result.current.status).toBe('error');
@@ -71,7 +77,7 @@ describe('useOllamaHealth', () => {
       new Error('Network error')
     );
 
-    const { result } = renderHook(() => useOllamaHealth());
+    const { result } = renderHook(() => useOllamaHealth(), { wrapper });
 
     await waitFor(() => {
       expect(result.current.status).toBe('error');

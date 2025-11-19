@@ -35,7 +35,7 @@ export function MoodSelector({ disabled, onMoodSelect }: MoodSelectorProps) {
               focus:ring-2
               focus:ring-gray-900
               focus:ring-offset-2
-              disabled:opacity-30
+              disabled:opacity-50
               disabled:cursor-not-allowed
             `}
             aria-label={`${config.emoji} ${config.label}`}

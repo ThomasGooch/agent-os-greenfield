@@ -19,3 +19,9 @@ export interface GenerationResult {
  * Circuit breaker state for fault tolerance
  */
 export type CircuitState = 'closed' | 'open' | 'half-open';
+
+/**
+ * Error type constants
+ */
+export const EMPTY_RESPONSE = 'EMPTY_RESPONSE';
+export const INTERRUPTED_GENERATION = 'INTERRUPTED_GENERATION';
