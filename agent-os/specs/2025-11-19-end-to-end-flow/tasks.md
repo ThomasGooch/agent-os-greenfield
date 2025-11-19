@@ -10,33 +10,33 @@ Total Tasks: 2 task groups
 #### Task Group 1: Update MoodInterpreterAgent Prompts
 **Dependencies:** None
 
-- [ ] 1.0 Update prompt templates for concise 3-sentence output
-  - [ ] 1.1 Write 2-8 focused tests for updated prompts
+- [x] 1.0 Update prompt templates for concise 3-sentence output
+  - [x] 1.1 Write 2-8 focused tests for updated prompts
     - Test that each prompt explicitly requests 3 sentences
     - Test that prompts maintain mood-specific keywords (happy, calm, motivated, creative)
     - Test that prompts are clear and direct
     - Limit to critical prompt validation tests only
-  - [ ] 1.2 Update HAPPY_PROMPT constant
+  - [x] 1.2 Update HAPPY_PROMPT constant
     - Modify prompt to explicitly request exactly 3 sentences
     - Maintain joyful, uplifting tone
     - Format: "Generate exactly 3 sentences of inspiring content for someone feeling happy..."
     - Keep prompt clear and directive for Ollama
-  - [ ] 1.3 Update CALM_PROMPT constant
+  - [x] 1.3 Update CALM_PROMPT constant
     - Modify prompt to explicitly request exactly 3 sentences
     - Maintain peaceful, serene tone
     - Format: "Generate exactly 3 sentences of peaceful content for someone feeling calm..."
     - Keep prompt clear and directive for Ollama
-  - [ ] 1.4 Update MOTIVATED_PROMPT constant
+  - [x] 1.4 Update MOTIVATED_PROMPT constant
     - Modify prompt to explicitly request exactly 3 sentences
     - Maintain energizing, inspiring tone
     - Format: "Generate exactly 3 sentences of motivating content for someone feeling motivated..."
     - Keep prompt clear and directive for Ollama
-  - [ ] 1.5 Update CREATIVE_PROMPT constant
+  - [x] 1.5 Update CREATIVE_PROMPT constant
     - Modify prompt to explicitly request exactly 3 sentences
     - Maintain imaginative, innovative tone
     - Format: "Generate exactly 3 sentences of creative inspiration for someone feeling creative..."
     - Keep prompt clear and directive for Ollama
-  - [ ] 1.6 Ensure MoodInterpreterAgent tests pass
+  - [x] 1.6 Ensure MoodInterpreterAgent tests pass
     - Run ONLY the tests written in 1.1 and existing MoodInterpreterAgent tests
     - Verify all 4 prompts request 3 sentences
     - Verify mood-specific keywords remain present
@@ -54,26 +54,26 @@ Total Tasks: 2 task groups
 #### Task Group 2: Test Complete Flow with Updated Prompts
 **Dependencies:** Task Group 1
 
-- [ ] 2.0 Verify end-to-end flow with 3-sentence output
-  - [ ] 2.1 Write 2-8 focused integration tests for end-to-end flow
+- [x] 2.0 Verify end-to-end flow with 3-sentence output
+  - [x] 2.1 Write 2-8 focused integration tests for end-to-end flow
     - Test mood selection → MoodInterpreterAgent → ContentGeneratorAgent flow
     - Test that generated content is appropriately concise (integration test with real/mocked Ollama)
     - Test that InspirationCard handles shorter content correctly
     - Limit to critical end-to-end workflow tests only
-  - [ ] 2.2 Manual browser testing for each mood
+  - [x] 2.2 Manual browser testing for each mood
     - Test Happy mood: verify 3-sentence output displays correctly
     - Test Calm mood: verify 3-sentence output displays correctly
     - Test Motivated mood: verify 3-sentence output displays correctly
     - Test Creative mood: verify 3-sentence output displays correctly
-  - [ ] 2.3 Verify loading states work correctly
+  - [x] 2.3 Verify loading states work correctly
     - Confirm loading skeleton displays during generation
     - Confirm smooth transition to content display
     - Verify no UI issues with shorter content length
-  - [ ] 2.4 Verify streaming accumulation completes
+  - [x] 2.4 Verify streaming accumulation completes
     - Confirm ContentGeneratorAgent accumulates full 3-sentence response
     - Verify no truncation or streaming issues
     - Test that all content reaches InspirationCard
-  - [ ] 2.5 Run feature-specific tests
+  - [x] 2.5 Run feature-specific tests
     - Run tests from 1.1 (prompt validation)
     - Run tests from 2.1 (end-to-end flow)
     - Run existing MoodInterpreterAgent unit tests

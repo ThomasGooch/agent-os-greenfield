@@ -19,13 +19,13 @@ export class MoodInterpreterAgent {
   private static instance: MoodInterpreterAgent;
 
   private readonly HAPPY_PROMPT =
-    'Generate an inspiring message for someone feeling happy';
+    'Generate exactly 3 sentences of inspiring content for someone feeling happy. Focus on joy, brightness, and cheerfulness. Keep it concise and uplifting.';
   private readonly CALM_PROMPT =
-    'Generate a peaceful message for someone feeling calm';
+    'Generate exactly 3 sentences of peaceful content for someone feeling calm. Focus on tranquility, serenity, and peace. Keep it concise and soothing.';
   private readonly MOTIVATED_PROMPT =
-    'Generate an energizing message for someone feeling motivated';
+    'Generate exactly 3 sentences of motivating content for someone feeling motivated. Focus on achievement, goals, and success. Keep it concise and energizing.';
   private readonly CREATIVE_PROMPT =
-    'Generate an imaginative message for someone feeling creative';
+    'Generate exactly 3 sentences of creative inspiration for someone feeling creative. Focus on imagination, originality, and innovation. Keep it concise and inspiring.';
 
   /**
    * Private constructor enforces singleton pattern

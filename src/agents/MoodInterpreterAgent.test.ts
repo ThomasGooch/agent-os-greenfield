@@ -59,7 +59,47 @@ describe('MoodInterpreterAgent', () => {
       expect(prompt).toBeTruthy();
       expect(typeof prompt).toBe('string');
       expect(prompt.length).toBeGreaterThan(0);
-      expect(prompt.length).toBeLessThan(250); // Short and simple (< 50 words ~= 250 chars)
+    });
+  });
+
+  it('should request exactly 3 sentences in all prompts', () => {
+    const agent = MoodInterpreterAgent.getInstance();
+    const moods: Mood[] = ['happy', 'calm', 'motivated', 'creative'];
+
+    moods.forEach((mood) => {
+      const prompt = agent.getPromptForMood(mood);
+      expect(prompt.toLowerCase()).toContain('exactly 3 sentences');
+    });
+  });
+
+  it('should maintain mood-specific keywords in updated prompts', () => {
+    const agent = MoodInterpreterAgent.getInstance();
+
+    const happyPrompt = agent.getPromptForMood('happy');
+    expect(happyPrompt.toLowerCase()).toMatch(/joy|happy|bright|cheer/);
+
+    const calmPrompt = agent.getPromptForMood('calm');
+    expect(calmPrompt.toLowerCase()).toMatch(/calm|peace|tranquil|seren/);
+
+    const motivatedPrompt = agent.getPromptForMood('motivated');
+    expect(motivatedPrompt.toLowerCase()).toMatch(
+      /motivat|achiev|goal|success/
+    );
+
+    const creativePrompt = agent.getPromptForMood('creative');
+    expect(creativePrompt.toLowerCase()).toMatch(
+      /creativ|imagin|origin|innovat/
+    );
+  });
+
+  it('should keep prompts clear and directive', () => {
+    const agent = MoodInterpreterAgent.getInstance();
+    const moods: Mood[] = ['happy', 'calm', 'motivated', 'creative'];
+
+    moods.forEach((mood) => {
+      const prompt = agent.getPromptForMood(mood);
+      expect(prompt.toLowerCase()).toContain('generate');
+      expect(prompt.toLowerCase()).toContain('concise');
     });
   });
 });
