@@ -95,4 +95,25 @@ describe('Agent Integration Tests', () => {
     // All prompts should be unique
     expect(prompts.size).toBe(4);
   });
+
+  it('should verify all prompts request exactly 3 sentences', () => {
+    const moodInterpreter = MoodInterpreterAgent.getInstance();
+    const moods: Mood[] = ['happy', 'calm', 'motivated', 'creative'];
+
+    moods.forEach((mood) => {
+      const prompt = moodInterpreter.getPromptForMood(mood);
+      expect(prompt.toLowerCase()).toContain('exactly 3 sentences');
+    });
+  });
+
+  it('should verify prompts maintain concise directive language', () => {
+    const moodInterpreter = MoodInterpreterAgent.getInstance();
+    const moods: Mood[] = ['happy', 'calm', 'motivated', 'creative'];
+
+    moods.forEach((mood) => {
+      const prompt = moodInterpreter.getPromptForMood(mood);
+      expect(prompt.toLowerCase()).toContain('generate');
+      expect(prompt.toLowerCase()).toContain('concise');
+    });
+  });
 });
