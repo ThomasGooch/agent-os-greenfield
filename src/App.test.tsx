@@ -6,6 +6,7 @@ import { ollamaClient } from '@/services/OllamaClient';
 vi.mock('@/services/OllamaClient', () => ({
   ollamaClient: {
     checkHealth: vi.fn(),
+    warmupModel: vi.fn().mockResolvedValue(undefined),
   },
 }));
 

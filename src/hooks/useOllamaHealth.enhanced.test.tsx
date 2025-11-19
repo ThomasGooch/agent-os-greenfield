@@ -8,6 +8,7 @@ import type { ReactNode } from 'react';
 vi.mock('@/services/OllamaClient', () => ({
   ollamaClient: {
     checkHealth: vi.fn(),
+    warmupModel: vi.fn().mockResolvedValue(undefined),
   },
 }));
 

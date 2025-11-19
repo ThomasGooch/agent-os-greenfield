@@ -84,6 +84,26 @@ export class OllamaClient {
   }
 
   /**
+   * Warm up the model by sending a minimal request
+   * This keeps the model loaded in memory for faster subsequent requests
+   */
+  public async warmupModel(): Promise<void> {
+    try {
+      console.log('[OllamaClient] Warming up model...');
+      const generator = this.generateStream('Hi');
+      // Consume the generator to complete the request
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for await (const _chunk of generator) {
+        // Discard warmup output
+      }
+      console.log('[OllamaClient] Model warmup complete');
+    } catch (error) {
+      console.warn('[OllamaClient] Model warmup failed (non-critical):', error);
+      // Don't throw - warmup failure shouldn't block app
+    }
+  }
+
+  /**
    * Generate streaming response from Ollama
    *
    * @param prompt - Text prompt to send to the model

@@ -1,5 +1,6 @@
 import { ollamaClient } from '@/services/OllamaClient';
 import type { GenerationResult, CircuitState } from '@/types';
+import type { Mood } from '@/types/mood';
 import { EMPTY_RESPONSE, INTERRUPTED_GENERATION } from '@/types/agent';
 
 /**
@@ -29,10 +30,12 @@ export class ContentGeneratorAgent {
   private circuitState: CircuitState = 'closed';
   private consecutiveFailures = 0;
   private circuitOpenUntil = 0;
+  private responseCache: Map<Mood, string> = new Map();
 
   private readonly MAX_RETRIES = 2;
   private readonly CIRCUIT_FAILURE_THRESHOLD = 3;
-  private readonly CIRCUIT_HALF_OPEN_DELAY_MS = 30000;
+  // Reduced from 30s to 15s for faster recovery from transient errors
+  private readonly CIRCUIT_HALF_OPEN_DELAY_MS = 15000;
 
   /**
    * Private constructor enforces singleton pattern
@@ -61,9 +64,32 @@ export class ContentGeneratorAgent {
    * Generate inspirational content from prompt
    *
    * @param prompt - Text prompt to send to AI model
+   * @param mood - Optional mood for cache key
    * @returns GenerationResult with content or error message
    */
-  public async generateContent(prompt: string): Promise<GenerationResult> {
+  public async generateContent(
+    prompt: string,
+    mood?: Mood
+  ): Promise<GenerationResult> {
+    // Check cache first if mood provided
+    if (mood) {
+      const cached = this.responseCache.get(mood);
+      if (cached) {
+        console.log(
+          `[ContentGeneratorAgent] Returning cached content for mood: ${mood}`
+        );
+        return {
+          success: true,
+          content: cached,
+        };
+      }
+    }
+
+    // Performance tracking - mark start
+    if (mood) {
+      performance.mark(`generation-start-${mood}`);
+    }
+
     // Check circuit breaker state
     if (this.circuitState === 'open') {
       if (Date.now() < this.circuitOpenUntil) {
@@ -85,6 +111,33 @@ export class ContentGeneratorAgent {
         // Success - reset circuit breaker
         this.consecutiveFailures = 0;
         this.circuitState = 'closed';
+
+        // Performance tracking - mark end and measure
+        if (mood) {
+          performance.mark(`generation-end-${mood}`);
+          performance.measure(
+            `generation-duration-${mood}`,
+            `generation-start-${mood}`,
+            `generation-end-${mood}`
+          );
+
+          // Log timing in development mode
+          if (import.meta.env.DEV) {
+            const measure = performance.getEntriesByName(
+              `generation-duration-${mood}`
+            )[0];
+            if (measure) {
+              console.log(
+                `[Performance] ${mood} mood: ${Math.round(measure.duration)}ms`
+              );
+            }
+          }
+        }
+
+        // Cache successful response
+        if (mood) {
+          this.responseCache.set(mood, content);
+        }
 
         return {
           success: true,
@@ -207,5 +260,13 @@ export class ContentGeneratorAgent {
    */
   private sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Clear all cached responses
+   * Used primarily for testing
+   */
+  public clearCache(): void {
+    this.responseCache.clear();
   }
 }

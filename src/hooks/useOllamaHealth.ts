@@ -26,6 +26,7 @@ export function useOllamaHealth() {
   const [status, setStatus] = useState<ConnectionStatus>('disconnected');
   const [isChecking, setIsChecking] = useState(true);
   const prevStatusRef = useRef<ConnectionStatus | null>(null);
+  const hasWarmedUp = useRef(false);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -45,6 +46,14 @@ export function useOllamaHealth() {
 
         prevStatusRef.current = healthStatus;
         setStatus(healthStatus);
+
+        // Trigger warmup after first successful health check
+        if (healthStatus === 'connected' && !hasWarmedUp.current) {
+          hasWarmedUp.current = true;
+          ollamaClient.warmupModel().catch((err) => {
+            console.warn('[useOllamaHealth] Warmup failed:', err);
+          });
+        }
       } catch {
         // If health check throws, treat as error status
         prevStatusRef.current = 'error';
