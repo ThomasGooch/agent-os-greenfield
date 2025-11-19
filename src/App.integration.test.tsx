@@ -17,14 +17,20 @@ import { ContentGeneratorAgent } from '@/agents/ContentGeneratorAgent';
 import { MoodInterpreterAgent } from '@/agents/MoodInterpreterAgent';
 
 // Mock agent types
-type MockContentGeneratorAgent = Pick<
-  ContentGeneratorAgent,
-  'getCircuitOpenUntil' | 'generateContent'
->;
-type MockMoodInterpreterAgent = Pick<
-  MoodInterpreterAgent,
-  'interpretMood' | 'getPromptForMood'
->;
+interface MockContentGeneratorAgent {
+  getCircuitOpenUntil: () => number;
+  generateContent: (
+    prompt: string
+  ) => Promise<{ success: boolean; content?: string; error?: string }>;
+}
+interface MockMoodInterpreterAgent {
+  interpretMood: (mood: string) => {
+    primaryMood: string;
+    intensity: string;
+    context: string;
+  };
+  getPromptForMood: (mood: string) => string;
+}
 
 describe('App - Error Handling Integration', () => {
   beforeEach(() => {

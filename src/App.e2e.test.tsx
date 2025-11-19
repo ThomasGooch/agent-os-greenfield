@@ -17,10 +17,14 @@ import { ContentGeneratorAgent } from '@/agents/ContentGeneratorAgent';
 import { MoodInterpreterAgent } from '@/agents/MoodInterpreterAgent';
 
 // Mock agent types
-type MockMoodInterpreterAgent = Pick<
-  MoodInterpreterAgent,
-  'interpretMood' | 'getPromptForMood'
->;
+interface MockMoodInterpreterAgent {
+  interpretMood: (mood: string) => {
+    primaryMood: string;
+    intensity: string;
+    context: string;
+  };
+  getPromptForMood: (mood: string) => string;
+}
 
 describe('App - End-to-End Error Recovery Flows', () => {
   beforeEach(() => {
