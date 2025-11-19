@@ -12,11 +12,14 @@ export function MoodSelector({ disabled, onMoodSelect }: MoodSelectorProps) {
     onMoodSelect(mood);
   };
 
+  // Stagger delays for entrance animations
+  const delays = ['delay-0', 'delay-75', 'delay-150', 'delay-[225ms]'];
+
   return (
     <div className="grid grid-cols-2 gap-6">
       {(
         Object.entries(MOOD_CONFIGS) as [Mood, (typeof MOOD_CONFIGS)[Mood]][]
-      ).map(([mood, config]) => {
+      ).map(([mood, config], index) => {
         const isActive = selectedMood === mood;
 
         return (
@@ -30,7 +33,18 @@ export function MoodSelector({ disabled, onMoodSelect }: MoodSelectorProps) {
               rounded-xl
               p-8
               transition-all
-              duration-200
+              duration-300
+              
+              animate-fade-in-up
+              ${delays[index]}
+              
+              hover:shadow-xl
+              hover:-translate-y-1
+              active:translate-y-0
+              
+              motion-reduce:animate-none
+              motion-reduce:hover:translate-y-0
+              
               focus:outline-none
               focus:ring-2
               focus:ring-gray-900
@@ -38,6 +52,9 @@ export function MoodSelector({ disabled, onMoodSelect }: MoodSelectorProps) {
               disabled:opacity-50
               disabled:cursor-not-allowed
             `}
+            style={{
+              transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+            }}
             aria-label={`${config.emoji} ${config.label}`}
             aria-pressed={isActive}
           >

@@ -62,7 +62,7 @@ export function InspirationCard({ content, isLoading }: InspirationCardProps) {
           transition-all
           duration-200
           ${isLoading ? 'animate-pulse' : ''}
-          ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}
+          ${isVisible ? 'opacity-100 scale-100 animate-shadow-pulse motion-reduce:animate-none' : 'opacity-0 scale-95'}
         `}
       >
         {isLoading ? (
