@@ -10,3 +10,5 @@ export type {
 } from './ollama';
 
 export type { GenerationResult, CircuitState } from './agent';
+
+export type { Toast, ToastType, ToastContextType } from './toast';

@@ -1,15 +1,27 @@
 import { useState } from 'react';
 import { useOllamaHealth } from '@/hooks/useOllamaHealth';
+import { useNetworkStatus } from '@/hooks/useNetworkStatus';
+import { useCircuitBreaker } from '@/hooks/useCircuitBreaker';
+import { useToast } from '@/contexts/ToastContext';
 import { MoodSelector } from '@/components/MoodSelector';
 import { InspirationCard } from '@/components/InspirationCard';
 import { ContentGeneratorAgent } from '@/agents/ContentGeneratorAgent';
 import { MoodInterpreterAgent } from '@/agents/MoodInterpreterAgent';
+import { ToastProvider } from '@/contexts/ToastContext';
 import type { Mood } from '@/types/mood';
 
-function App() {
+function AppContent() {
   const { status, isChecking } = useOllamaHealth();
+  const { isOnline } = useNetworkStatus();
   const [content, setContent] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { showToast } = useToast();
+
+  // Get circuit breaker state
+  const contentAgent = ContentGeneratorAgent.getInstance();
+  const circuitOpenUntil = contentAgent.getCircuitOpenUntil();
+  const { remainingSeconds, isCircuitOpen } =
+    useCircuitBreaker(circuitOpenUntil);
 
   const handleMoodSelect = async (mood: Mood) => {
     console.log('Selected mood:', mood);
@@ -29,7 +41,8 @@ function App() {
       if (result.success && result.content) {
         setContent(result.content);
       } else {
-        // Error handled by toaster in ContentGeneratorAgent
+        // Show error toast
+        showToast(result.error || 'Something went wrong', 'error');
         console.error('Content generation failed:', result.error);
       }
     } catch (error) {
@@ -48,20 +61,44 @@ function App() {
             Daily Inspiration
           </h1>
           {isChecking && <p className="text-sm text-gray-400">Connecting...</p>}
-          {!isChecking && status === 'connected' && (
-            <p className="text-sm text-gray-400">How are you feeling today?</p>
+
+          {/* Offline message (highest priority) */}
+          {!isOnline && (
+            <p className="text-sm text-red-500">You appear to be offline</p>
           )}
-          {!isChecking && status === 'disconnected' && (
-            <p className="text-sm text-red-500">Ollama not running</p>
+
+          {/* Circuit breaker message */}
+          {isOnline && isCircuitOpen && (
+            <p className="text-sm text-amber-500">
+              Service temporarily unavailable. Try again in {remainingSeconds}s
+            </p>
           )}
-          {!isChecking && status === 'error' && (
+
+          {/* Ollama connection status */}
+          {isOnline &&
+            !isCircuitOpen &&
+            !isChecking &&
+            status === 'connected' && (
+              <p className="text-sm text-gray-400">
+                How are you feeling today?
+              </p>
+            )}
+          {isOnline &&
+            !isCircuitOpen &&
+            !isChecking &&
+            status === 'disconnected' && (
+              <p className="text-sm text-red-500">Ollama not running</p>
+            )}
+          {isOnline && !isCircuitOpen && !isChecking && status === 'error' && (
             <p className="text-sm text-amber-500">Connection error</p>
           )}
         </div>
 
         {/* Mood Selection */}
         <MoodSelector
-          disabled={status !== 'connected'}
+          disabled={
+            !isOnline || isLoading || isCircuitOpen || status !== 'connected'
+          }
           onMoodSelect={handleMoodSelect}
         />
 
@@ -69,6 +106,14 @@ function App() {
         <InspirationCard content={content} isLoading={isLoading} />
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ToastProvider>
+      <AppContent />
+    </ToastProvider>
   );
 }
 

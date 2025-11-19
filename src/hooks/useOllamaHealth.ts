@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ollamaClient } from '@/services/OllamaClient';
+import { useToast } from '@/contexts/ToastContext';
 import type { ConnectionStatus } from '@/types';
 
 /**
@@ -24,22 +25,46 @@ import type { ConnectionStatus } from '@/types';
 export function useOllamaHealth() {
   const [status, setStatus] = useState<ConnectionStatus>('disconnected');
   const [isChecking, setIsChecking] = useState(true);
+  const prevStatusRef = useRef<ConnectionStatus | null>(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const checkHealth = async () => {
       try {
         const healthStatus = await ollamaClient.checkHealth();
+        const prevStatus = prevStatusRef.current;
+
+        // Detect status change from disconnected/error to connected
+        if (
+          prevStatus &&
+          (prevStatus === 'disconnected' || prevStatus === 'error') &&
+          healthStatus === 'connected'
+        ) {
+          showToast('Connection to AI service restored', 'success');
+        }
+
+        prevStatusRef.current = healthStatus;
         setStatus(healthStatus);
       } catch {
         // If health check throws, treat as error status
+        prevStatusRef.current = 'error';
         setStatus('error');
       } finally {
         setIsChecking(false);
       }
     };
 
+    // Initial check
     checkHealth();
-  }, []);
+
+    // Set up periodic polling every 30 seconds
+    const intervalId = setInterval(checkHealth, 30000);
+
+    // Cleanup interval on unmount
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [showToast]);
 
   return { status, isChecking };
 }
