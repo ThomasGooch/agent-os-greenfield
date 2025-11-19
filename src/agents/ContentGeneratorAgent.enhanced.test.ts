@@ -5,6 +5,7 @@ import { ollamaClient } from '@/services/OllamaClient';
 vi.mock('@/services/OllamaClient', () => ({
   ollamaClient: {
     generateStream: vi.fn(),
+    warmupModel: vi.fn().mockResolvedValue(undefined),
   },
 }));
 

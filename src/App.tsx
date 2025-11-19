@@ -36,7 +36,7 @@ function AppContent() {
 
       // Generate content using ContentGeneratorAgent
       const contentAgent = ContentGeneratorAgent.getInstance();
-      const result = await contentAgent.generateContent(prompt);
+      const result = await contentAgent.generateContent(prompt, mood);
 
       if (result.success && result.content) {
         setContent(result.content);

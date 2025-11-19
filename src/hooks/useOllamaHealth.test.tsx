@@ -8,6 +8,7 @@ import type { PropsWithChildren } from 'react';
 vi.mock('@/services/OllamaClient', () => ({
   ollamaClient: {
     checkHealth: vi.fn(),
+    warmupModel: vi.fn(),
   },
 }));
 
@@ -41,6 +42,7 @@ describe('useOllamaHealth', () => {
 
   it('should update status to connected when health check succeeds', async () => {
     vi.mocked(ollamaClient.checkHealth).mockResolvedValue('connected');
+    vi.mocked(ollamaClient.warmupModel).mockResolvedValue(undefined);
 
     const { result } = renderHook(() => useOllamaHealth(), { wrapper });
 

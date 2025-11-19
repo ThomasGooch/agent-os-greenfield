@@ -145,4 +145,55 @@ describe('OllamaClient', () => {
       }).rejects.toThrow('Failed to connect to Ollama');
     });
   });
+
+  describe('warmupModel', () => {
+    it('should send a warmup request and complete successfully', async () => {
+      // Mock console.log and console.warn
+      const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      // Mock successful streaming response
+      const mockStream = (async function* () {
+        yield 'test';
+      })();
+
+      vi.spyOn(client, 'generateStream').mockReturnValueOnce(mockStream);
+
+      await client.warmupModel();
+
+      expect(logSpy).toHaveBeenCalledWith('[OllamaClient] Warming up model...');
+      expect(logSpy).toHaveBeenCalledWith(
+        '[OllamaClient] Model warmup complete'
+      );
+      expect(warnSpy).not.toHaveBeenCalled();
+
+      logSpy.mockRestore();
+      warnSpy.mockRestore();
+    });
+
+    it('should handle warmup failures gracefully without throwing', async () => {
+      // Mock console.warn
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+      // Mock failing streaming response
+      const mockStream = (async function* () {
+        yield 'test';
+        throw new Error('Connection failed');
+      })();
+
+      vi.spyOn(client, 'generateStream').mockReturnValueOnce(mockStream);
+
+      // Should not throw
+      await expect(client.warmupModel()).resolves.not.toThrow();
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        '[OllamaClient] Model warmup failed (non-critical):',
+        expect.any(Error)
+      );
+
+      logSpy.mockRestore();
+      warnSpy.mockRestore();
+    });
+  });
 });
